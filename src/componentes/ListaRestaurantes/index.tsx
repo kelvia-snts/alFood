@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { IPagination } from "../../interfaces/IPagination";
 import IRestaurant from "../../interfaces/IRestaurant";
 import style from "./ListaRestaurantes.module.scss";
-import Restaurante from "./Restaurante";
+import Restaurant from "./Restaurant";
 
 const ListaRestaurantes = () => {
   const [restaurants, setRestaurants] = useState<IRestaurant[]>([]);
@@ -36,7 +36,7 @@ const ListaRestaurantes = () => {
         Os restaurantes mais <em>bacanas</em>!
       </h1>
       {restaurants?.map((item) => (
-        <Restaurante restaurante={item} key={item.id} />
+        <Restaurant restaurant={item} key={item.id} />
       ))}
       {nextPage && <button onClick={viewMore}>Ver Mais</button>}
     </section>
