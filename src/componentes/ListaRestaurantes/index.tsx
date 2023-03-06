@@ -1,8 +1,9 @@
 import { Button } from "@mui/material";
-import axios from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { useEffect, useState } from "react";
 import { IPagination } from "../../interfaces/IPagination";
 import IRestaurant from "../../interfaces/IRestaurant";
+import ISearchParameters from "../../interfaces/ISearchParameters";
 import style from "./ListaRestaurantes.module.scss";
 import Restaurant from "./Restaurant";
 
@@ -11,7 +12,9 @@ const ListaRestaurantes = () => {
   const [nextPage, setNextPage] = useState("");
   const [previousPage, setPreviousPage] = useState("");
 
-  const loadDatas = (url: string) => {
+  const [search, setSearch] = useState("");
+
+  const loadDatas = (url: string, options: AxiosRequestConfig = {}) => {
     axios
       .get<IPagination<IRestaurant>>(url)
       .then((response) => {
@@ -22,6 +25,17 @@ const ListaRestaurantes = () => {
       .catch((error) => {
         console.log(error);
       });
+  };
+
+  const seek = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const options = {
+      params: {} as ISearchParameters,
+    };
+    if (search) {
+      options.params.search = search;
+    }
+    loadDatas(`http://localhost:8000/api/v1/restaurantes/`, options);
   };
 
   useEffect(() => {
@@ -44,6 +58,14 @@ const ListaRestaurantes = () => {
       <h1>
         Os restaurantes mais <em>bacanas</em>!
       </h1>
+      <form onSubmit={seek}>
+        <input
+          type="text"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+        />
+        <button type="submit">Buscar</button>
+      </form>
       {restaurants?.map((item) => (
         <Restaurant restaurant={item} key={item.id} />
       ))}
